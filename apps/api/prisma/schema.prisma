@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  motDePasse String  @map("mot_de_passe")
+  pseudo    String?
+  creeLe    DateTime @default(now()) @map("cree_le")
+  mains     Main[]
+
+  @@map("utilisateurs")
+}
+
+model Main {
+  id             String   @id @default(cuid())
+  utilisateurId  String   @map("utilisateur_id")
+  utilisateur    Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  texteOriginal  String   @map("texte_original") @db.Text
+  donneesParsees Json     @map("donnees_parsees")
+  site           String
+  idMainSite     String   @map("id_main_site")
+  joueeLE        DateTime @map("jouee_le")
+  creeLe         DateTime @default(now()) @map("cree_le")
+  stakes         String
+  typeJeu        String   @map("type_jeu")
+  reviewIA       ReviewIA?
+
+  @@map("mains")
+}
+
+model ReviewIA {
+  id       String   @id @default(cuid())
+  mainId   String   @unique @map("main_id")
+  main     Main     @relation(fields: [mainId], references: [id], onDelete: Cascade)
+  review   Json
+  fuites   String[]
+  creeLe   DateTime @default(now()) @map("cree_le")
+
+  @@map("reviews_ia")
+}

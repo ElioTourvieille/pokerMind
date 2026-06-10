@@ -1,0 +1,29 @@
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+*.log
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+dist/
+.ruff_cache/
+
+# Prisma
+apps/api/prisma/migrations/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
