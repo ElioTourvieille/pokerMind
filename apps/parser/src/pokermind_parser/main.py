@@ -4,6 +4,7 @@ from fastapi import FastAPI, Form, HTTPException, UploadFile, File
 from pydantic import BaseModel, Field
 
 from . import parser_main, parser_fichier
+from .modeles import MainNormalisee
 from .stats import calculer_stats, detecter_fuites
 
 app = FastAPI(title="PokerMind Parser API", version="0.3.0")
@@ -100,6 +101,41 @@ async def endpoint_upload_stats(
     try:
         texte = (await fichier.read()).decode("utf-8", errors="replace")
         return _reponse_stats(texte, site, hero, max_fuites)
+    except HTTPException:
+        raise
+    except (NotImplementedError, ValueError, KeyError) as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
+class RequeteStatsParsees(BaseModel):
+    mains: list[dict]
+    hero: str | None = None
+    max_fuites: int = Field(default=6, ge=1, le=6)
+
+
+@app.post("/stats/parsees", summary="Stats + fuites sur des mains déjà parsées (depuis DB)")
+async def endpoint_stats_parsees(requete: RequeteStatsParsees):
+    try:
+        mains_obj = [MainNormalisee.model_validate(m) for m in requete.mains]
+        if not mains_obj:
+            raise HTTPException(status_code=422, detail="Aucune main fournie")
+        stats = calculer_stats(mains_obj, hero_override=requete.hero)
+        fuites = detecter_fuites(stats, max_fuites=requete.max_fuites)
+        return {
+            "mains_analysees": len(mains_obj),
+            "stats": {
+                "mains": stats.mains,
+                "vpip_pct": stats.vpip_pct,
+                "pfr_pct": stats.pfr_pct,
+                "wwsf_pct": stats.wwsf_pct,
+                "fold_3bet_pct": stats.fold_3bet_pct,
+                "cbet_pct": stats.cbet_pct,
+                "fold_cbet_pct": stats.fold_cbet_pct,
+                "ev_par_position": stats.ev_par_position,
+                "bb_par_100": stats.bb_par_100,
+            },
+            "fuites": [asdict(f) for f in fuites],
+        }
     except HTTPException:
         raise
     except (NotImplementedError, ValueError, KeyError) as e:
