@@ -106,6 +106,19 @@ async def endpoint_upload_stats(
         raise HTTPException(status_code=422, detail=str(e))
 
 
+@app.post("/lot", summary="Parse toutes les mains d'un fichier (JSON)")
+async def endpoint_lot(requete: RequeteParsing):
+    try:
+        mains = parser_fichier(requete.texte, requete.site)
+        if not mains:
+            raise HTTPException(status_code=422, detail="Aucune main valide trouvée dans le fichier")
+        return [m.model_dump() for m in mains]
+    except HTTPException:
+        raise
+    except (NotImplementedError, ValueError, KeyError) as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+
 @app.get("/sante", summary="Health check")
 async def sante():
     return {"statut": "ok", "version": "0.3.0"}

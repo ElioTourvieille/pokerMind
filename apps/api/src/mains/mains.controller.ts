@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query, Request, UseGuards } from '@nestjs/common'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { MainsService } from './mains.service'
 import { UploadMainDto } from './dto/upload-main.dto'
+import { ListerMainsDto } from './dto/lister-mains.dto'
 
 interface UtilisateurJwt {
   id: string
@@ -20,8 +21,8 @@ export class MainsController {
   }
 
   @Get()
-  lister(@Request() req: { user: UtilisateurJwt }) {
-    return this.mainsService.lister(req.user.id)
+  lister(@Request() req: { user: UtilisateurJwt }, @Query() dto: ListerMainsDto) {
+    return this.mainsService.lister(req.user.id, dto)
   }
 
   @Get(':id')
