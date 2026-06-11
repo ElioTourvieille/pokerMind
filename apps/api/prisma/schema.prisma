@@ -8,14 +8,26 @@ datasource db {
 }
 
 model Utilisateur {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  motDePasse String  @map("mot_de_passe")
-  pseudo    String?
-  creeLe    DateTime @default(now()) @map("cree_le")
-  mains     Main[]
+  id            String         @id @default(cuid())
+  email         String         @unique
+  motDePasse    String         @map("mot_de_passe")
+  pseudo        String?
+  creeLe        DateTime       @default(now()) @map("cree_le")
+  mains         Main[]
+  refreshTokens RefreshToken[]
 
   @@map("utilisateurs")
+}
+
+model RefreshToken {
+  id            String      @id @default(cuid())
+  tokenHash     String      @unique @map("token_hash")
+  utilisateurId String      @map("utilisateur_id")
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id], onDelete: Cascade)
+  expireLe      DateTime    @map("expire_le")
+  creeLe        DateTime    @default(now()) @map("cree_le")
+
+  @@map("refresh_tokens")
 }
 
 model Main {
