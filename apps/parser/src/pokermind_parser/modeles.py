@@ -7,6 +7,7 @@ from pydantic import BaseModel
 class SitePoker(str, Enum):
     POKERSTARS = "pokerstars"
     GGPOKER = "ggpoker"
+    WINAMAX = "winamax"
 
 
 class TypeJeu(str, Enum):
@@ -86,3 +87,4 @@ class MainNormalisee(BaseModel):
     board: list[str]
     pot: Pot
     gagnants: list[Gagnant]
+    retours: dict[str, float] = {}  # mises non encaissées retournées (Uncalled bet)
