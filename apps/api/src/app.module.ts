@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module'
 import { MainsModule } from './mains/mains.module'
 import { StatsModule } from './stats/stats.module'
 import { ReviewModule } from './review/review.module'
+import { ProgressionModule } from './progression/progression.module'
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ReviewModule } from './review/review.module'
     MainsModule,
     StatsModule,
     ReviewModule,
+    ProgressionModule,
   ],
 })
 export class AppModule {}

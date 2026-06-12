@@ -71,7 +71,6 @@ export class ReviewService {
     const message = await this.anthropic.messages.create({
       model: 'claude-opus-4-8',
       max_tokens: 1024,
-      thinking: { type: 'adaptive' },
       messages: [{ role: 'user', content: this.socraticPrompt(context) }],
     })
 
@@ -122,7 +121,6 @@ export class ReviewService {
     const stream = this.anthropic.messages.stream({
       model: 'claude-opus-4-8',
       max_tokens: 2000,
-      thinking: { type: 'adaptive' },
       messages: [{ role: 'user', content: this.finalAnalysisPrompt(context, questions, dto.answers) }],
     })
 
