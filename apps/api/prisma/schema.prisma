@@ -13,8 +13,9 @@ model Utilisateur {
   motDePasse    String         @map("mot_de_passe")
   pseudo        String?
   creeLe        DateTime       @default(now()) @map("cree_le")
-  mains         Main[]
-  refreshTokens RefreshToken[]
+  mains            Main[]
+  refreshTokens    RefreshToken[]
+  conceptProgress  ConceptProgress[]
 
   @@map("utilisateurs")
 }
@@ -56,4 +57,19 @@ model ReviewIA {
   creeLe   DateTime @default(now()) @map("cree_le")
 
   @@map("reviews_ia")
+}
+
+model ConceptProgress {
+  id          String      @id @default(cuid())
+  userId      String      @map("user_id")
+  conceptId   String      @map("concept_id")
+  attempts    Int         @default(0)
+  bestScore   Int         @default(0)
+  mastered    Boolean     @default(false)
+  lastAttempt DateTime?   @map("last_attempt")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  user        Utilisateur @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conceptId])
+  @@map("concept_progress")
 }
