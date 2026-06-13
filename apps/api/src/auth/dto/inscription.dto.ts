@@ -6,7 +6,7 @@ export class InscriptionDto {
 
   @IsString()
   @MinLength(8, { message: 'Le mot de passe doit faire au moins 8 caractères' })
-  motDePasse!: string
+  password!: string
 
   @IsString()
   @IsOptional()

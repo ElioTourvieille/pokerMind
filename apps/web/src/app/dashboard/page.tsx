@@ -167,8 +167,14 @@ function LeakCard({ fuite, index }: { fuite: Fuite; index: number }) {
       </button>
 
       {ouvert && (
-        <div className="mt-3 pt-3 border-t border-current/20 text-sm opacity-90 leading-relaxed">
-          {fuite.conseil}
+        <div className="mt-3 pt-3 border-t border-current/20 space-y-3">
+          <p className="text-sm opacity-90 leading-relaxed">{fuite.conseil}</p>
+          <a
+            href={`/concepts?leak=${fuite.nom}`}
+            className="inline-flex items-center gap-1.5 text-xs font-medium opacity-80 hover:opacity-100 underline underline-offset-2 transition-opacity"
+          >
+            Voir les concepts liés →
+          </a>
         </div>
       )}
     </div>

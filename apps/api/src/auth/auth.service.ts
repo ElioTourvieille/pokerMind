@@ -19,7 +19,7 @@ export class AuthService {
     })
     if (existant) throw new ConflictException('Cet email est déjà utilisé')
 
-    const hash = await bcrypt.hash(dto.motDePasse, 12)
+    const hash = await bcrypt.hash(dto.password, 12)
     const utilisateur = await this.prisma.utilisateur.create({
       data: { email: dto.email, motDePasse: hash, pseudo: dto.pseudo },
       select: { id: true, email: true, pseudo: true },
@@ -34,7 +34,7 @@ export class AuthService {
     })
     if (!utilisateur) throw new UnauthorizedException('Identifiants incorrects')
 
-    const valide = await bcrypt.compare(dto.motDePasse, utilisateur.motDePasse)
+    const valide = await bcrypt.compare(dto.password, utilisateur.motDePasse)
     if (!valide) throw new UnauthorizedException('Identifiants incorrects')
 
     return {
